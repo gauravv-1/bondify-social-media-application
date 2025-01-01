@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+      - name: user-service
+        image: pisal23/linkedin-app-user-service
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "400Mi"
+            cpu: "200m"
+          requests:
+            memory: "200Mi"
+            cpu: "100m"
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: k8s
+          - name: DB_USER
+            value: postgres  # Update this to match the DB_USER used in user-db.yml
+          - name: DB_PASSWORD
+            value: root123  # Update this to match the DB_PASSWORD used in user-db.yml
+          - name: DB_SERVICE
+            value: user-db  # This is the name of the database service, matching the service defined in user-db.yml
+          - name: DB_NAME
+            value: usersDB  # The database name you created in PostgreSQL
+        ports:
+        - containerPort: 9020
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  selector:
+    app: user-service
+  ports:
+  - port: 80
+    targetPort: 9020
+  
