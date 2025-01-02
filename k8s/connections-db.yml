@@ -29,7 +29,10 @@ spec:
         - containerPort: 7687 # Bolt
         env:
         - name: NEO4J_AUTH
-          value: "neo4j/password" # Change as per your setup
+          valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: NEO4J_AUTH
         - name: NEO4J_dbms_memory_heap_initial__size
           value: "512M"
         - name: NEO4J_dbms_memory_heap_max__size

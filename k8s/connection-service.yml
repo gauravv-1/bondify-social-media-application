@@ -24,6 +24,22 @@ spec:
         env:
           - name: SPRING_PROFILES_ACTIVE
             value: k8s
+          - name: DB_HOST_URL
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: CONNECTION_DB_URI
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: CONNECTION_DB_USERNAME
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: CONNECTION_DB_PASSWORD
+            
           # - name: DB_USER
           #   value: user
           # - name: DB_PASSWORD

@@ -24,12 +24,26 @@ spec:
             memory: "100Mi"
             cpu: "100m"
         env:
-          - name: POSTGRES_USER
-            value: postgres
-          - name: POSTGRES_PASSWORD
-            value: root123
-          - name: POSTGRES_DB
-            value: usersDB
+          - name: DB_SERVICE
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: USERS_DB_URI
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: USERS_DB_NAME
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: USERS_DB_USERNAME
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: USERS_DB_PASSWORD
           - name: PGDATA
             value: /var/lib/postgresql/data/pgdata
         ports:

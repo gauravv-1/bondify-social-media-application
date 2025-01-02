@@ -3,7 +3,7 @@ spring.application.name: api-gateway
 server.port: 8081
 eureka.client.service-url.defaultZone: http://discovery-server:8761/eureka
 
-jwt.secretKey: asdfladf98a7df89aysf8d9yasiudfha9s87dfa89syudhfa98sdfyaisuhdfa98sfy
+jwt.secretKey: ${JWT_SECRET_KEY}
 
 spring:
   cloud:

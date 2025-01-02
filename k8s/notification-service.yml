@@ -24,14 +24,26 @@ spec:
         env:
           - name: SPRING_PROFILES_ACTIVE
             value: k8s
-          # - name: DB_USER
-          #   value: user
-          # - name: DB_PASSWORD
-          #   value: password
-          # - name: DB_SERVICE
-          #   value: notification-db
-          # - name: DB_NAME
-          #   value: notificationDB
+          - name: DB_HOST_URL
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: NOTIFICATION_DB_URI
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: NOTIFICATION_DB_NAME
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: NOTIFICATION_DB_USERNAME
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: NOTIFICATION_DB_PASSWORD
         ports:
         - containerPort: 9040
 

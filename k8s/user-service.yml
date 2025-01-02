@@ -25,14 +25,22 @@ spec:
         env:
           - name: SPRING_PROFILES_ACTIVE
             value: k8s
-          - name: DB_USER
-            value: postgres  # Update this to match the DB_USER used in user-db.yml
-          - name: DB_PASSWORD
-            value: root123  # Update this to match the DB_PASSWORD used in user-db.yml
           - name: DB_SERVICE
-            value: user-db  # This is the name of the database service, matching the service defined in user-db.yml
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: USERS_DB_URI
           - name: DB_NAME
-            value: usersDB  # The database name you created in PostgreSQL
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: USERS_DB_NAME
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: USERS_DB_USERNAME
+          - name: DB_PASSWORD
         ports:
         - containerPort: 9020
 

@@ -11,6 +11,7 @@
         <option value="$PROJECT_DIR$/connection-service/pom.xml" />
         <option value="$PROJECT_DIR$/notification-service/pom.xml" />
         <option value="$PROJECT_DIR$/connections-service/pom.xml" />
+        <option value="$PROJECT_DIR$/uploader-service/pom.xml" />
       </list>
     </option>
   </component>

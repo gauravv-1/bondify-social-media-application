@@ -25,7 +25,12 @@ spec:
         - containerPort: 8081
         env:
         - name: SPRING_PROFILES_ACTIVE
-          value: k8s  
+          value: k8s
+        - name: JWT_SECRET_KEY
+          valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: JWT_SECRET_KEY
         readinessProbe:
           httpGet:
             path: /actuator/health

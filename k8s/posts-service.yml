@@ -24,14 +24,26 @@ spec:
         env:
           - name: SPRING_PROFILES_ACTIVE
             value: k8s
-          - name: DB_USER
-            value: postgres
-          - name: DB_PASSWORD
-            value: root123
           - name: DB_SERVICE
-            value: posts-db
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: POSTS_DB_URI
           - name: DB_NAME
-            value: postDB
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: POSTS_DB_NAME
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: POSTS_DB_USERNAME
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: POSTS_DB_PASSWORD
         ports:
         - containerPort: 9010
 
