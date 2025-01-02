@@ -1,0 +1,5 @@
+# Ignore docker-compose.yml at the root directory
+docker-compose.yml
+
+# Ignore Dockerfile in every microservice
+*/Dockerfile
