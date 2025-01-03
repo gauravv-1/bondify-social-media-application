@@ -2,4 +2,6 @@
 /shelf/
 /workspace.xml
 k8s/my-secret.yml
+docker-compose.yml
+*/Dockerfile
 

@@ -41,6 +41,15 @@ spec:
                 name: my-secret
                 key: USERS_DB_USERNAME
           - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: USERS_DB_PASSWORD
+          - name: JWT_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: JWT_SECRET_KEY
         ports:
         - containerPort: 9020
 
