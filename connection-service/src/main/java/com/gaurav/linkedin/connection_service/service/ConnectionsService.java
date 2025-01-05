@@ -7,6 +7,7 @@ import com.gaurav.linkedin.connection_service.entity.Person;
 import com.gaurav.linkedin.connection_service.event.AcceptConnectionRequestEvent;
 import com.gaurav.linkedin.connection_service.event.SendConnectionRequestEvent;
 import com.gaurav.linkedin.connection_service.repository.PersonRepository;
+import com.gaurav.linkedin.user_service.event.UserCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -21,6 +22,14 @@ public class ConnectionsService {
     private final PersonRepository personRepository;
     private final KafkaTemplate<Long, SendConnectionRequestEvent> sendRequestKafkaTemplate;
     private final KafkaTemplate<Long, AcceptConnectionRequestEvent> acceptRequestKafkaTemplate;
+
+    public Person createPersonNode(UserCreatedEvent user){
+        Person person = new Person();
+        person.setUserId(user.getUserId());
+        person.setName(user.getName());
+        personRepository.save(person);
+        return person;
+    }
 
     public List<Person> getFirstDegreeConnections(){
         Long userId = UserContextHolder.getCurrentUserId();

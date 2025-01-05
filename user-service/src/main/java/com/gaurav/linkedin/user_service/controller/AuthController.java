@@ -4,6 +4,7 @@ package com.gaurav.linkedin.user_service.controller;
 import com.gaurav.linkedin.user_service.dto.LoginRequestDto;
 import com.gaurav.linkedin.user_service.dto.SignupRequestDto;
 import com.gaurav.linkedin.user_service.dto.UserDto;
+import com.gaurav.linkedin.user_service.exceptions.ApiResponse;
 import com.gaurav.linkedin.user_service.service.AuthService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -25,17 +26,17 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto, HttpSession session) {
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginRequestDto loginRequestDto, HttpSession session) {
         String token = authService.login(loginRequestDto);
 
         // Store userId in session for subsequent requests
 //        session.setAttribute("userId", userId);
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(new ApiResponse<>(token));
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
+    public ResponseEntity<ApiResponse<String>> logout(HttpSession session) {
         session.invalidate();
-        return ResponseEntity.ok("Logged out successfully. Session invalidated.");
+        return ResponseEntity.ok(new ApiResponse<>("Logged out successfully. Session invalidated."));
     }
 }

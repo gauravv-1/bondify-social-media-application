@@ -2,6 +2,7 @@ package com.gaurav.linkedin.connection_service.controller;
 
 
 import com.gaurav.linkedin.connection_service.entity.Person;
+import com.gaurav.linkedin.connection_service.exceptions.ApiResponse;
 import com.gaurav.linkedin.connection_service.service.ConnectionsService;
 import lombok.Locked;
 import lombok.RequiredArgsConstructor;
@@ -23,17 +24,17 @@ public class ConnectionsController {
     }
 
     @PostMapping("/request/{userId}")
-    public ResponseEntity<Boolean> sendConnectionRequest(@PathVariable Long userId){
-        return ResponseEntity.ok(connectionsService.sendConnectionRequest(userId));
+    public ResponseEntity<ApiResponse<Boolean>> sendConnectionRequest(@PathVariable Long userId){
+        return ResponseEntity.ok(new ApiResponse<>(connectionsService.sendConnectionRequest(userId)));
     }
 
     @PostMapping("/accept/{userId}")
-    public ResponseEntity<Boolean> acceptConnectionRequest(@PathVariable Long userId){
-        return ResponseEntity.ok(connectionsService.acceptConnectionRequest(userId));
+    public ResponseEntity<ApiResponse<Boolean>> acceptConnectionRequest(@PathVariable Long userId){
+        return ResponseEntity.ok(new ApiResponse<>(connectionsService.acceptConnectionRequest(userId)));
     }
 
     @PostMapping("/reject/{userId}")
-    public ResponseEntity<Boolean> rejectConnectionRequest(@PathVariable Long userId){
-        return ResponseEntity.ok(connectionsService.rejectConnectionRequest(userId));
+    public ResponseEntity<ApiResponse<Boolean>> rejectConnectionRequest(@PathVariable Long userId){
+        return ResponseEntity.ok(new ApiResponse<>(connectionsService.rejectConnectionRequest(userId)));
     }
 }

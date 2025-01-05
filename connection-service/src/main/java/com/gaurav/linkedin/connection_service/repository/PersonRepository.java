@@ -31,7 +31,7 @@ public interface PersonRepository extends Neo4jRepository<Person,Long> {
             "CREATE (p1)-[:REQUESTED_TO]->(p2)")
     void addConnectionRequest(Long senderId, Long receiverId);
 
-    @Query("Match (p1.Person)-[r:REQUESTED_TO]->(p2:Person) " +
+    @Query("Match (p1:Person)-[r:REQUESTED_TO]->(p2:Person) " +
             "WHERE p1.userId = $senderId AND p2.userId = $receiverId " +
             "DELETE r " +
             "CREATE (p1)-[:CONNECTED_TO]->(p2)")
