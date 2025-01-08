@@ -11,15 +11,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiError> handleResourceNotFoundException(ResourceNotFoundException exception){
-        ApiError apiError = new ApiError(exception.getLocalizedMessage(), HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(apiError,HttpStatus.NOT_FOUND);
+        ApiError apiError = new ApiError(exception.getLocalizedMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiError,HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiError> handleBadRequestException(BadRequestException exception){
-        ApiError apiError = new ApiError(exception.getLocalizedMessage(),HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(apiError,HttpStatus.BAD_REQUEST);
+        ApiError apiError = new ApiError(exception.getLocalizedMessage(), HttpStatus.UNAUTHORIZED);  // Change to UNAUTHORIZED
+        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
+
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiError> handleRuntimeException(RuntimeException exception){

@@ -32,6 +32,10 @@ public class PostService {
         Post post = modelMapper.map(postDto, Post.class);
         post.setUserId(userId);
 
+        if (post.getImageUrl() == null || post.getImageUrl().isEmpty()) {
+            post.setImageUrl(null);
+        }
+
         Post savedPost = postRepository.save(post);
         PostCreatedEvent postCreatedEvent = PostCreatedEvent.builder()
                 .postId(savedPost.getId())
@@ -57,6 +61,11 @@ public class PostService {
 
     public List<PostDto> getAllPostsOfUser(Long userId) {
         List<Post> posts= postRepository.findByUserId(userId);
+
+
+        posts.forEach(post -> System.out.println("Post ID: " + post.getId() + ", Image URLs: " + post.getImageUrl()));
+
+
 
         return posts
                 .stream()

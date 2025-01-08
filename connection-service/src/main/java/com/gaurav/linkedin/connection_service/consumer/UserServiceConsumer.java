@@ -1,6 +1,7 @@
 package com.gaurav.linkedin.connection_service.consumer;
 
 import com.gaurav.linkedin.connection_service.service.ConnectionsService;
+import com.gaurav.linkedin.user_service.event.ProfileUpdatedEvent;
 import com.gaurav.linkedin.user_service.event.UserCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,4 +18,11 @@ public class UserServiceConsumer {
     public void handleUserCreated(UserCreatedEvent userCreatedEvent){
         connectionsService.createPersonNode(userCreatedEvent);
     }
+
+    @KafkaListener(topics = "profile-updated-topic")
+    public void handleProfileUpdated(ProfileUpdatedEvent profileUpdatedEvent){
+        connectionsService.createPersonInstituteRelation(profileUpdatedEvent);
+    }
+
+
 }

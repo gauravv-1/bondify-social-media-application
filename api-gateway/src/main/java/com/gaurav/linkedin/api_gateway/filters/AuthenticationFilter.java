@@ -1,17 +1,15 @@
 package com.gaurav.linkedin.api_gateway.filters;
 
-
-
 import com.gaurav.linkedin.api_gateway.JwtService;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+
 @Slf4j
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
@@ -26,11 +24,20 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            log.info("Login request: {}", exchange.getRequest().getURI());
+            // Handle OPTIONS method (CORS preflight requests)
+            if (exchange.getRequest().getMethod() == HttpMethod.OPTIONS) {
+                exchange.getResponse().setStatusCode(HttpStatus.OK);
+                exchange.getResponse().getHeaders().add("Access-Control-Allow-Origin", "http://localhost:5173");
+                exchange.getResponse().getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+                exchange.getResponse().getHeaders().add("Access-Control-Allow-Headers", "*");
+                exchange.getResponse().getHeaders().add("Access-Control-Allow-Credentials", "true");
+                return exchange.getResponse().setComplete();
+            }
 
+            // JWT authentication logic for other methods
             final String tokenHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
 
-            if(tokenHeader == null || !tokenHeader.startsWith("Bearer")) {
+            if (tokenHeader == null || !tokenHeader.startsWith("Bearer")) {
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                 log.error("Authorization token header not found");
                 return exchange.getResponse().setComplete();

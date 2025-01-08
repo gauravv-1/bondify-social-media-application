@@ -1,0 +1,16 @@
+spring:
+  web:
+    mvc:
+      cors:
+        mappings:
+          /api/v1/users/**:
+            allowedOrigins: "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+            allowedHeaders:
+              - "*"
+            allowCredentials: true

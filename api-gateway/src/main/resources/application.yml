@@ -16,13 +16,14 @@ spring:
           filters:
             - StripPrefix=2
 
+
         - id: posts-service
           uri: ${POSTS_SERVICE_URI:lb://POSTS-SERVICE}
           predicates:
             - Path=/api/v1/posts/**
           filters:
             - StripPrefix=2
-            - name: AuthenticationFilter
+#            - name: AuthenticationFilter
 
         - id: connection-service
           uri: ${CONNECTION_SERVICE_URI:lb://CONNECTION-SERVICE}
@@ -31,3 +32,17 @@ spring:
           filters:
             - StripPrefix=2
             - name: AuthenticationFilter
+
+      globalcors:
+        corsConfigurations:
+          '[/**]': # Apply to all endpoints
+            allowedOrigins: "http://localhost:5173"  # Your frontend URL
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+            allowedHeaders:
+              - "*"
+            allowCredentials: true

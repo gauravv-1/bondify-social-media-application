@@ -2,9 +2,11 @@ package com.gaurav.linkedin.posts_service.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class PostCreateRequestDto {
     private String content;
-    private String imageUrl;
+    private List<String> imageUrl;
 
 }

@@ -4,6 +4,7 @@ import com.gaurav.linkedin.connection_service.entity.Person;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -43,4 +44,6 @@ public interface PersonRepository extends Neo4jRepository<Person,Long> {
             "WHERE p1.userId= $senderId AND p2.userId = $receiverId " +
             "DELETE r")
     void rejectConnectionRequest(Long senderId, Long receiverId);
+
+    Optional<Person> findByUserId(Long userId);
 }

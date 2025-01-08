@@ -2,11 +2,14 @@ package com.gaurav.linkedin.connection_service.service;
 
 import com.gaurav.linkedin.connection_service.auth.UserContextHolder;
 
+import com.gaurav.linkedin.connection_service.entity.Institute;
 import com.gaurav.linkedin.connection_service.entity.Person;
 
 import com.gaurav.linkedin.connection_service.event.AcceptConnectionRequestEvent;
 import com.gaurav.linkedin.connection_service.event.SendConnectionRequestEvent;
+import com.gaurav.linkedin.connection_service.repository.InstituteRepository;
 import com.gaurav.linkedin.connection_service.repository.PersonRepository;
+import com.gaurav.linkedin.user_service.event.ProfileUpdatedEvent;
 import com.gaurav.linkedin.user_service.event.UserCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +17,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,9 @@ public class ConnectionsService {
     private final PersonRepository personRepository;
     private final KafkaTemplate<Long, SendConnectionRequestEvent> sendRequestKafkaTemplate;
     private final KafkaTemplate<Long, AcceptConnectionRequestEvent> acceptRequestKafkaTemplate;
+    private final InstituteRepository instituteRepository;
+
+
 
     public Person createPersonNode(UserCreatedEvent user){
         Person person = new Person();
@@ -107,11 +114,31 @@ public class ConnectionsService {
 
         personRepository.rejectConnectionRequest(senderId,receiverId);
         return true;
+    }
 
+    public void createPersonInstituteRelation(ProfileUpdatedEvent profileUpdatedEvent) {
+        // Retrieve the Person node by userId
+        Person person = personRepository.findByUserId(profileUpdatedEvent.getUserId())
+                .orElseThrow(() -> new RuntimeException("Person node not found for userId: "
+                        + profileUpdatedEvent.getUserId()));
 
+        // Retrieve the Institute node by ID
+        Optional<Institute> instituteOptional = instituteRepository.findById(profileUpdatedEvent.getInstituteId());
 
+        if (instituteOptional.isEmpty()) {
+            throw new RuntimeException("Institute node not found for id: "
+                    + profileUpdatedEvent.getInstituteId());
+        }
 
+        // Establish the AFFILIATED_WITH relationship
+        Institute institute = instituteOptional.get();
+        person.setInstitute(institute);
 
+        // Save the Person node with the relationship
+        personRepository.save(person);
 
+        // Increment the number of students connected to the institute
+        institute.setNumberOfStudents(institute.getNumberOfStudents() + 1);
+        instituteRepository.save(institute);
     }
 }
