@@ -26,4 +26,6 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserProfile userProfile;
+
+    private Boolean isProfileComplete = false;
 }

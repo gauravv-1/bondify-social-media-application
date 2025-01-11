@@ -6,6 +6,7 @@ import com.gaurav.linkedin.user_service.dto.SignupRequestDto;
 import com.gaurav.linkedin.user_service.dto.UserDto;
 import com.gaurav.linkedin.user_service.exceptions.ApiResponse;
 import com.gaurav.linkedin.user_service.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,12 @@ public class AuthController {
         // Store userId in session for subsequent requests
 //        session.setAttribute("userId", userId);
         return ResponseEntity.ok(new ApiResponse<>(token));
+    }
+
+    @GetMapping("/getUserProfile")
+    public ResponseEntity<UserDto> getUserProfile(HttpServletRequest httpServletRequest){
+        UserDto userDto = authService.getUserProfile(httpServletRequest);
+        return new ResponseEntity<>(userDto,HttpStatus.OK);
     }
 
     @GetMapping("/logout")

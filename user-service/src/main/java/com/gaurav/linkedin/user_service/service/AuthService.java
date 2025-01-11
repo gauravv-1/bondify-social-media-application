@@ -10,11 +10,15 @@ import com.gaurav.linkedin.user_service.exceptions.BadRequestException;
 import com.gaurav.linkedin.user_service.exceptions.ResourceNotFoundException;
 import com.gaurav.linkedin.user_service.repository.UserRepository;
 import com.gaurav.linkedin.user_service.util.PasswordUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.lang.module.ResolutionException;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -61,5 +65,25 @@ public class AuthService {
         return jwtService.generateAccessToken(user);
 
 
+    }
+
+    public UserDto getUserProfile(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new ResolutionException("Authorization header is missing or invalid");
+        }
+        String token = authorizationHeader.substring(7); // Remove "Bearer " prefix
+        log.info("Token: {} ",token);
+
+        // Extract user ID from JWT token
+        Long userId = jwtService.getUserIdFromToken(token);
+        log.info("User Id: {}", userId);
+
+        // Fetch user by ID
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResolutionException("User not found"));
+        user.setIsProfileComplete(false);
+
+        return modelMapper.map(user, UserDto.class);
     }
 }

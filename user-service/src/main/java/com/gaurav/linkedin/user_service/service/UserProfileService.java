@@ -47,18 +47,18 @@ public class UserProfileService {
 
     @Transactional
     public UserProfiledDto completeProfile(UserProfileUpdateRequest userProfileUpdateRequest, HttpServletRequest request) {
-        // Extract JWT token from Authorization header
+
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new ResolutionException("Authorization header is missing or invalid");
         }
-        String token = authorizationHeader.substring(7); // Remove "Bearer " prefix
+        String token = authorizationHeader.substring(7);
 
-        // Extract user ID from JWT token
+
         Long userId = jwtService.getUserIdFromToken(token);
         log.info("User Id: {}", userId);
 
-        // Fetch user by ID
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResolutionException("User not found"));
 
@@ -87,6 +87,8 @@ public class UserProfileService {
         // Publish Kafka topic
         profileUpdatedEvent.setUserId(userId);
         kafkaTemplate.send("profile-updated-topic", profileUpdatedEvent);
+        user.setIsProfileComplete(true);
+        userRepository.save(user);
 
         // Save the user profile
         userProfileRepository.save(userProfile);

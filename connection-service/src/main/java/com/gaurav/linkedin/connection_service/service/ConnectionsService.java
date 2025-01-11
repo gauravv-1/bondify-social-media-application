@@ -2,6 +2,7 @@ package com.gaurav.linkedin.connection_service.service;
 
 import com.gaurav.linkedin.connection_service.auth.UserContextHolder;
 
+import com.gaurav.linkedin.connection_service.dto.InstituteDto;
 import com.gaurav.linkedin.connection_service.entity.Institute;
 import com.gaurav.linkedin.connection_service.entity.Person;
 
@@ -11,13 +12,17 @@ import com.gaurav.linkedin.connection_service.repository.InstituteRepository;
 import com.gaurav.linkedin.connection_service.repository.PersonRepository;
 import com.gaurav.linkedin.user_service.event.ProfileUpdatedEvent;
 import com.gaurav.linkedin.user_service.event.UserCreatedEvent;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +32,7 @@ public class ConnectionsService {
     private final KafkaTemplate<Long, SendConnectionRequestEvent> sendRequestKafkaTemplate;
     private final KafkaTemplate<Long, AcceptConnectionRequestEvent> acceptRequestKafkaTemplate;
     private final InstituteRepository instituteRepository;
+    private final ModelMapper modelMapper;
 
 
 
@@ -140,5 +146,19 @@ public class ConnectionsService {
         // Increment the number of students connected to the institute
         institute.setNumberOfStudents(institute.getNumberOfStudents() + 1);
         instituteRepository.save(institute);
+    }
+
+    public List<InstituteDto> getAllInstitutes(HttpServletRequest request) {
+        Long userId = UserContextHolder.getCurrentUserId();
+        log.info("User Id at getAllInstitutes: {}",userId);
+        List<Institute> institutes = new ArrayList<>();
+        if (userId!=null){
+            institutes =  instituteRepository.findAll();
+        }
+        log.info("User Id at getAllInstitutes: {}",userId);
+        return institutes
+                .stream()
+                .map((element)->modelMapper.map(element,InstituteDto.class))
+                .collect(Collectors.toList());
     }
 }
