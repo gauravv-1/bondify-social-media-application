@@ -8,6 +8,7 @@ import com.gaurav.linkedin.posts_service.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Locked;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +19,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/core")
 @RequiredArgsConstructor
+@Slf4j
 public class PostController {
 
     private final PostService postService;
 
     @PostMapping
     public ResponseEntity<PostDto> createPost(@RequestBody PostCreateRequestDto postDto){
+        log.info("At PostController createPost method");
+        postDto.getImageUrl().forEach((e)->log.info(e," Img Urls"));
         PostDto createdPost = postService.createPost(postDto);
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
@@ -42,6 +46,14 @@ public class PostController {
         List<PostDto> posts = postService.getAllPostsOfUser(userId);
         return ResponseEntity.ok(posts);
     }
+
+    @GetMapping("/users/allPosts")
+    public ResponseEntity<List<PostDto>> getAllPostsOfCurrentUser(){
+        List<PostDto> posts = postService.getAllPostsOfCurrentUser();
+        return ResponseEntity.ok(posts);
+    }
+
+
 
 
 

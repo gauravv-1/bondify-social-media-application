@@ -32,7 +32,7 @@ public class Post {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "post_image_url", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "image_url")
-    private List<String> imageUrl = new ArrayList<>();
+    private List<String> imageUrl;
 
 
 }

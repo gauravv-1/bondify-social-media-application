@@ -3,10 +3,11 @@ package com.gaurav.linkedin.connection_service.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-
+@Slf4j
 @Component
 public class UserInterceptor implements HandlerInterceptor {
 
@@ -14,6 +15,7 @@ public class UserInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String userId = request.getHeader("X-User-Id");
+        log.info("User Id at UserInterceptor: {}",userId);
         if(userId != null) {
             UserContextHolder.setCurrentUserId(Long.valueOf(userId));
         }

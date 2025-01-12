@@ -23,7 +23,7 @@ spring:
             - Path=/api/v1/posts/**
           filters:
             - StripPrefix=2
-#            - name: AuthenticationFilter
+            - name: AuthenticationFilter
 
         - id: connection-service
           uri: ${CONNECTION_SERVICE_URI:lb://CONNECTION-SERVICE}
@@ -32,6 +32,15 @@ spring:
           filters:
             - StripPrefix=2
             - name: AuthenticationFilter
+
+        - id: uploader-service
+          uri: lb://UPLOADER-SERVICE
+          predicates:
+            - Path=/api/v1/uploads/**
+          filters:
+            - StripPrefix=2
+            - name: AuthenticationFilter
+
 
       globalcors:
         corsConfigurations:

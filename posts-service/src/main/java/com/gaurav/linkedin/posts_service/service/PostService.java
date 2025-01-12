@@ -9,12 +9,14 @@ import com.gaurav.linkedin.posts_service.entity.Post;
 import com.gaurav.linkedin.posts_service.event.PostCreatedEvent;
 import com.gaurav.linkedin.posts_service.exceptions.ResourceNotFoundException;
 import com.gaurav.linkedin.posts_service.repository.PostRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.lang.module.ResolutionException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,15 +28,30 @@ public class PostService {
     private final ModelMapper modelMapper;
     private final ConnectionsClient connectionsClient;
     private final KafkaTemplate<Long, PostCreatedEvent> kafkaTemplate;
+    private final JwtService jwtService;
 
     public PostDto createPost(PostCreateRequestDto postDto) {
         Long userId = UserContextHolder.getCurrentUserId();
+
+//        String authorizationHeader = request.getHeader("Authorization");
+//        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+//            throw new ResolutionException("Authorization header is missing or invalid");
+//        }
+//        String token = authorizationHeader.substring(7);
+
+//        Long userId = jwtService.getUserIdFromToken(token);
+        log.info("User Id: {}",userId);
         Post post = modelMapper.map(postDto, Post.class);
         post.setUserId(userId);
+        log.info("Image Urls: {}",postDto.getImageUrl());
 
         if (post.getImageUrl() == null || post.getImageUrl().isEmpty()) {
+            log.info("At if...");
             post.setImageUrl(null);
         }
+
+
+
 
         Post savedPost = postRepository.save(post);
         PostCreatedEvent postCreatedEvent = PostCreatedEvent.builder()
@@ -44,6 +61,7 @@ public class PostService {
                 .build();
 
         kafkaTemplate.send("post-created-topic",postCreatedEvent);
+        log.info("Saved Post:- {}",savedPost.getImageUrl());
         return modelMapper.map(savedPost, PostDto.class);
     }
 
@@ -71,5 +89,16 @@ public class PostService {
                 .stream()
                 .map((element)->modelMapper.map(element,PostDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public List<PostDto> getAllPostsOfCurrentUser() {
+        Long userId = UserContextHolder.getCurrentUserId();
+        List<Post> posts= postRepository.findByUserId(userId);
+
+        return posts
+                .stream()
+                .map((element)->modelMapper.map(element,PostDto.class))
+                .collect(Collectors.toList());
+
     }
 }

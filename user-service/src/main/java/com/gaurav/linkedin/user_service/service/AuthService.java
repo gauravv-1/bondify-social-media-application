@@ -82,7 +82,7 @@ public class AuthService {
         // Fetch user by ID
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResolutionException("User not found"));
-        user.setIsProfileComplete(false);
+
 
         return modelMapper.map(user, UserDto.class);
     }
