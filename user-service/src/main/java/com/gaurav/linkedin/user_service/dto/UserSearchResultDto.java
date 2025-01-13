@@ -12,11 +12,13 @@ public class UserSearchResultDto {
     private String name;
     private String username;
     private String profilePicUrl;
+    private String institute;
 
     // Constructor matching the fields used in the query
-    public UserSearchResultDto(String name, String username, String profilePicUrl) {
+    public UserSearchResultDto(String name, String username, String profilePicUrl,String institute) {
         this.name = name;
         this.username = username;
         this.profilePicUrl = profilePicUrl;
+        this.institute = institute;
     }
 }

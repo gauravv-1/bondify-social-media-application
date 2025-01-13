@@ -80,10 +80,19 @@ public class AuthService {
         log.info("User Id: {}", userId);
 
         // Fetch user by ID
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByIdWithProfileAndInstitute(userId)
                 .orElseThrow(() -> new ResolutionException("User not found"));
 
 
         return modelMapper.map(user, UserDto.class);
+    }
+
+    public UserDto getRequestedUsersProfile(Long userId) {
+        User user = userRepository.findByIdWithProfileAndInstitute(userId)
+                .orElseThrow(() -> new ResolutionException("User not found"));
+
+
+        return modelMapper.map(user, UserDto.class);
+
     }
 }

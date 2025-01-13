@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     boolean existsByEmail(String email);
 
-    @Query("SELECT new com.gaurav.linkedin.user_service.dto.UserSearchResultDto(u.id, u.name, up.username, up.profilePicUrl) " +
+    @Query("SELECT new com.gaurav.linkedin.user_service.dto.UserSearchResultDto(u.id, u.name, up.username, up.profilePicUrl, up.institute.name) " +
             "FROM User u LEFT JOIN u.userProfile up " +
             "WHERE (LOWER(u.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR (up.username IS NOT NULL AND LOWER(up.username) LIKE LOWER(CONCAT('%', :searchTerm, '%')))) " +
             "ORDER BY CASE WHEN LOWER(u.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) THEN 0 ELSE 1 END, " +
@@ -25,9 +25,12 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
 
 
-
-
-
-
-    Optional<User> findById(Long id);
+    @Query("""
+           SELECT u\s
+           FROM User u\s
+           LEFT JOIN FETCH u.userProfile up\s
+           LEFT JOIN FETCH up.institute\s
+           WHERE u.id = :id
+          \s""")
+    Optional<User> findByIdWithProfileAndInstitute(Long id);
 }

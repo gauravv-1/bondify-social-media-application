@@ -11,5 +11,6 @@ public class UserDto {
     private String name;
     private String email;
     private Boolean isProfileComplete;
+    private UserProfiledDto userProfiledDto;
 
 }

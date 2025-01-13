@@ -2,6 +2,7 @@ package com.gaurav.linkedin.connection_service.service;
 
 import com.gaurav.linkedin.connection_service.auth.UserContextHolder;
 
+import com.gaurav.linkedin.connection_service.dto.ConnectionStatusDto;
 import com.gaurav.linkedin.connection_service.dto.InstituteDto;
 import com.gaurav.linkedin.connection_service.entity.Institute;
 import com.gaurav.linkedin.connection_service.entity.Person;
@@ -160,5 +161,19 @@ public class ConnectionsService {
                 .stream()
                 .map((element)->modelMapper.map(element,InstituteDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public ConnectionStatusDto getConnectionStatus(Long userId) {
+
+        Long myUserId = UserContextHolder.getCurrentUserId();
+
+        boolean isRequested = personRepository.connectionRequestExists(userId,myUserId);
+        boolean isConnected = personRepository.alreadyConnected(userId,myUserId);
+
+        return ConnectionStatusDto.builder()
+                .isConnected(isConnected)
+                .isRequested(isRequested)
+                .build();
+
     }
 }

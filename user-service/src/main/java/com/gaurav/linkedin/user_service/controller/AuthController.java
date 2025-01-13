@@ -46,4 +46,9 @@ public class AuthController {
         session.invalidate();
         return ResponseEntity.ok(new ApiResponse<>("Logged out successfully. Session invalidated."));
     }
+
+    @PostMapping("/{userId}/getRequestedUsersProfile")
+    public ResponseEntity<UserDto> getRequestedUsersProfile(@PathVariable Long userId){
+        return new ResponseEntity<>(authService.getRequestedUsersProfile(userId),HttpStatus.OK);
+    }
 }
