@@ -8,6 +8,8 @@ import com.gaurav.linkedin.connection_service.service.ConnectionsService;
 import lombok.Locked;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.shaded.com.google.protobuf.Api;
+import org.apiguardian.api.API;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +46,11 @@ public class ConnectionsController {
     public ResponseEntity<ApiResponse<ConnectionStatusDto>> getConnectionStatus(@PathVariable Long userId){
 
         return ResponseEntity.ok(new ApiResponse<>(connectionsService.getConnectionStatus(userId)));
+    }
+
+    @GetMapping("/getConnectedUserId")
+    public List<Long> getConnectedUserId(){
+        List<Long> connectedIds = connectionsService.getConnectedUserId();
+        return connectedIds;
     }
 }

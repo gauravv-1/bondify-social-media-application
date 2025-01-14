@@ -176,4 +176,9 @@ public class ConnectionsService {
                 .build();
 
     }
+
+    public List<Long> getConnectedUserId() {
+        Long userId = UserContextHolder.getCurrentUserId();
+        return personRepository.getConnectedUserId(userId);
+    }
 }

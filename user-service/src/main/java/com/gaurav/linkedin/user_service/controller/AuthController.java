@@ -9,10 +9,12 @@ import com.gaurav.linkedin.user_service.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -51,4 +53,13 @@ public class AuthController {
     public ResponseEntity<UserDto> getRequestedUsersProfile(@PathVariable Long userId){
         return new ResponseEntity<>(authService.getRequestedUsersProfile(userId),HttpStatus.OK);
     }
+
+    @GetMapping("/getUserById/{userId}")
+    public UserDto getUserById(@PathVariable Long userId){
+        log.info("At getUserById auth controller..");
+        log.info("At getUserById auth controller..");
+        log.info("At getUserById auth controller..");
+        return authService.getUserById(userId);
+    }
+
 }

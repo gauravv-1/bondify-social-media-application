@@ -95,4 +95,12 @@ public class AuthService {
         return modelMapper.map(user, UserDto.class);
 
     }
+
+    public UserDto getUserById(Long userId) {
+        User user =  userRepository.findById(userId).orElseThrow(()->
+            new ResourceNotFoundException("User with Id not found.."));
+        log.info("At getUserById User service: - {}",user);
+
+        return modelMapper.map(user,UserDto.class);
+    }
 }

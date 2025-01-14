@@ -34,5 +34,10 @@ public class Post {
     @Column(name = "image_url")
     private List<String> imageUrl;
 
+    @Column(nullable = true)
+    private String profilePicUrl;
+    @Column(nullable = true)
+    private String userName;
+
 
 }

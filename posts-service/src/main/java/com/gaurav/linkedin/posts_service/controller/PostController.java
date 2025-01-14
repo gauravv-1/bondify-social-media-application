@@ -4,13 +4,16 @@ import com.gaurav.linkedin.posts_service.auth.UserContextHolder;
 import com.gaurav.linkedin.posts_service.dto.PostCreateRequestDto;
 import com.gaurav.linkedin.posts_service.dto.PostDto;
 import com.gaurav.linkedin.posts_service.entity.Post;
+import com.gaurav.linkedin.posts_service.exceptions.ApiResponse;
 import com.gaurav.linkedin.posts_service.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Locked;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.shaded.com.google.protobuf.Api;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +54,22 @@ public class PostController {
     public ResponseEntity<List<PostDto>> getAllPostsOfCurrentUser(){
         List<PostDto> posts = postService.getAllPostsOfCurrentUser();
         return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/feed/getUnseenPosts")
+    public ResponseEntity<List<PostDto>> getUnseenPosts(@RequestParam int page, @RequestParam int size) {
+        List<PostDto> postDto = postService.getUnseenPosts(page,size);
+
+
+
+        return ResponseEntity.ok(postDto);
+    }
+
+
+    @PostMapping("/feed/mark-seen")
+    public ResponseEntity<ApiResponse<Boolean>> markPostsAsSeen(@RequestBody List<Long> postIds) {
+        postService.markPostAsSeen(postIds);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

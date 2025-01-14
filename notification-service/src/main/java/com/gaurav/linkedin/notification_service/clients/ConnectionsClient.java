@@ -14,4 +14,5 @@ public interface ConnectionsClient {
     @GetMapping("/core/first-degree")
     List<PersonDto> getFirstConnections(@RequestHeader("X-User-Id") Long userId);
 
+
 }
