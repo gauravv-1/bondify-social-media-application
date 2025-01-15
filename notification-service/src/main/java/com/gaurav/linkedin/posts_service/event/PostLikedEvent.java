@@ -7,4 +7,5 @@ public class PostLikedEvent {
     Long postId;
     Long creatorId;
     Long likedByUserId;
+    String likedByUserName;
 }

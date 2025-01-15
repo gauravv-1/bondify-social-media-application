@@ -5,6 +5,7 @@ import com.gaurav.linkedin.connection_service.dto.ConnectionStatusDto;
 import com.gaurav.linkedin.connection_service.entity.Person;
 import com.gaurav.linkedin.connection_service.exceptions.ApiResponse;
 import com.gaurav.linkedin.connection_service.service.ConnectionsService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Locked;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.shaded.com.google.protobuf.Api;
@@ -23,18 +24,18 @@ public class ConnectionsController {
     private final ConnectionsService connectionsService;
 
     @GetMapping("/first-degree")
-    public ResponseEntity<List<Person>> getFirstConnections(){
-        return ResponseEntity.ok(connectionsService.getFirstDegreeConnections());
+    public ResponseEntity<List<Person>> getFirstConnections(@RequestHeader("X-User-Id") Long userId){
+        return ResponseEntity.ok(connectionsService.getFirstDegreeConnections(userId));
     }
 
     @PostMapping("/request/{userId}")
-    public ResponseEntity<ApiResponse<Boolean>> sendConnectionRequest(@PathVariable Long userId){
-        return ResponseEntity.ok(new ApiResponse<>(connectionsService.sendConnectionRequest(userId)));
+    public ResponseEntity<ApiResponse<Boolean>> sendConnectionRequest(@PathVariable Long userId, HttpServletRequest request){
+        return ResponseEntity.ok(new ApiResponse<>(connectionsService.sendConnectionRequest(userId,request)));
     }
 
     @PostMapping("/accept/{userId}")
-    public ResponseEntity<ApiResponse<Boolean>> acceptConnectionRequest(@PathVariable Long userId){
-        return ResponseEntity.ok(new ApiResponse<>(connectionsService.acceptConnectionRequest(userId)));
+    public ResponseEntity<ApiResponse<Boolean>> acceptConnectionRequest(@PathVariable Long userId,HttpServletRequest request){
+        return ResponseEntity.ok(new ApiResponse<>(connectionsService.acceptConnectionRequest(userId, request)));
     }
 
     @PostMapping("/reject/{userId}")

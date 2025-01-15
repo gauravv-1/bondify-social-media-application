@@ -9,5 +9,6 @@ public class PostCreatedEvent {
     Long creatorId;
     String content;
     Long postId;
+    String creatorUserName;
 
 }

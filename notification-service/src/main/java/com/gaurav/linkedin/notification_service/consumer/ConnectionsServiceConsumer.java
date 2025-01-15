@@ -19,8 +19,8 @@ public class ConnectionsServiceConsumer {
     public void handleSendConnectionRequest(SendConnectionRequestEvent sendConnectionRequestEvent) {
         log.info("handle connections: handleSendConnectionRequest: {}", sendConnectionRequestEvent);
         String message =
-                "You have receiver a connection request from user with id: %d"+sendConnectionRequestEvent.getSenderId();
-        sendNotification.send(sendConnectionRequestEvent.getReceiverId(), message);
+                "You have received a connection request from "+sendConnectionRequestEvent.getSenderUserName();
+        sendNotification.send(sendConnectionRequestEvent.getReceiverId(), message,sendConnectionRequestEvent.getSenderUserName());
     }
 
 
@@ -29,8 +29,8 @@ public class ConnectionsServiceConsumer {
     public void handleAcceptConnectionRequest(AcceptConnectionRequestEvent acceptConnectionRequestEvent) {
         log.info("handle connections: handleAcceptConnectionRequest: {}", acceptConnectionRequestEvent);
         String message =
-                "Your connection request has been accepted by the user with id: %d"+acceptConnectionRequestEvent.getReceiverId();
-        sendNotification.send(acceptConnectionRequestEvent.getSenderId(), message);
+                "Your connection request has been accepted by "+acceptConnectionRequestEvent.getSenderUserName();
+        sendNotification.send(acceptConnectionRequestEvent.getSenderId(), message, acceptConnectionRequestEvent.getSenderUserName());
     }
 
 }

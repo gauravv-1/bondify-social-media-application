@@ -2,12 +2,15 @@ package com.gaurav.linkedin.notification_service.consumer;
 
 
 import com.gaurav.linkedin.notification_service.clients.ConnectionsClient;
-import com.gaurav.linkedin.notification_service.dto.PersonDto;
+import com.gaurav.linkedin.notification_service.clients.ConnectionsResponse;
+import com.gaurav.linkedin.notification_service.clients.WrappedResponse;
+import com.gaurav.linkedin.notification_service.dto.Person;
 import com.gaurav.linkedin.notification_service.service.SendNotification;
 import com.gaurav.linkedin.posts_service.event.PostCreatedEvent;
 import com.gaurav.linkedin.posts_service.event.PostLikedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -23,22 +26,28 @@ public class PostsServiceConsumer {
 
     @KafkaListener(topics = "post-created-topic")
     public void handlePostCreated(PostCreatedEvent postCreatedEvent) {
-        log.info("Sending notifications: handlePostCreated: {}", postCreatedEvent);
-        List<PersonDto> connections = connectionsClient.getFirstConnections(postCreatedEvent.getCreatorId());
+        log.info("Received postCreatedEvent: {}", postCreatedEvent);
 
-        for(PersonDto connection: connections) {
-            sendNotification.send(connection.getUserId(), "Your connection "+postCreatedEvent.getCreatorId()+" has created" +
-                    " a post, Check it out");
+        Long userId = postCreatedEvent.getCreatorId();
+        WrappedResponse<Person> response = connectionsClient.getFirstConnections(userId);
+        List<Person> connections = response.getData();
+        log.info("Fetched connections: {}", connections);
+
+        for (Person connection : connections) {
+            sendNotification.send(
+                    connection.getUserId(),
+                    "Your connection " + postCreatedEvent.getCreatorUserName() + " has created a post, Check it out",
+                    postCreatedEvent.getCreatorUserName()
+            );
         }
     }
 
     @KafkaListener(topics = "post-liked-topic")
     public void handlePostLiked(PostLikedEvent postLikedEvent) {
         log.info("Sending notifications: handlePostLiked: {}", postLikedEvent);
-        String message = String.format("Your post, %d has been liked by %d", postLikedEvent.getPostId(),
-                postLikedEvent.getLikedByUserId());
+        String message = "Your post has been liked by "+postLikedEvent.getLikedByUserName();
 
-        sendNotification.send(postLikedEvent.getCreatorId(), message);
+        sendNotification.send(postLikedEvent.getCreatorId(), message, postLikedEvent.getLikedByUserName());
     }
 
 }

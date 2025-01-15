@@ -19,7 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.lang.module.ResolutionException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +36,7 @@ public class ConnectionsService {
     private final KafkaTemplate<Long, AcceptConnectionRequestEvent> acceptRequestKafkaTemplate;
     private final InstituteRepository instituteRepository;
     private final ModelMapper modelMapper;
+    private final JwtService jwtService;
 
 
 
@@ -45,14 +48,22 @@ public class ConnectionsService {
         return person;
     }
 
-    public List<Person> getFirstDegreeConnections(){
-        Long userId = UserContextHolder.getCurrentUserId();
+    public List<Person> getFirstDegreeConnections(Long userId){
         log.info("getting first degree connection for user id: {}",userId);
         return personRepository.getFirstDegreeConnections(userId);
     }
 
-    public Boolean sendConnectionRequest(Long receiverId) {
+    public Boolean sendConnectionRequest(Long receiverId,HttpServletRequest request) {
         Long senderId = UserContextHolder.getCurrentUserId();
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new ResolutionException("Authorization header is missing or invalid");
+        }
+        String token = authorizationHeader.substring(7); // Remove "Bearer " prefix
+//        log.info("Token: {} ",token);
+        String userName = jwtService.getUserNameFromToken(token);
+
+
         log.info("Trying to send Connection request, sender:{}, receiver:{}",senderId,receiverId);
         boolean alreadySendRequest = personRepository.connectionRequestExists(senderId,receiverId);
         boolean alreadyConnected = personRepository.alreadyConnected(senderId,receiverId);
@@ -75,6 +86,7 @@ public class ConnectionsService {
         SendConnectionRequestEvent sendConnectionRequestEvent = SendConnectionRequestEvent.builder()
                 .senderId(senderId)
                 .receiverId(receiverId)
+                .senderUserName(userName)
                 .build();
         sendRequestKafkaTemplate.send("send-connection-request-topic",sendConnectionRequestEvent);
         return true;
@@ -83,8 +95,18 @@ public class ConnectionsService {
 
     }
 
-    public Boolean acceptConnectionRequest(Long senderId) {
+    public Boolean acceptConnectionRequest(Long senderId,HttpServletRequest request) {
         Long receiverId = UserContextHolder.getCurrentUserId();
+
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new ResolutionException("Authorization header is missing or invalid");
+        }
+        String token = authorizationHeader.substring(7); // Remove "Bearer " prefix
+//        log.info("Token: {} ",token);
+        String userName = jwtService.getUserNameFromToken(token);
+
+
 
         boolean connectionRequestExists = personRepository.connectionRequestExists(senderId,receiverId);
         boolean alreadyConnected = personRepository.alreadyConnected(senderId,receiverId);
@@ -102,6 +124,7 @@ public class ConnectionsService {
         AcceptConnectionRequestEvent acceptConnectionRequestEvent = AcceptConnectionRequestEvent.builder()
                 .senderId(senderId)
                 .receiverId(receiverId)
+                .senderUserName(userName)
                 .build();
         acceptRequestKafkaTemplate.send("accept-connection-request-topic",acceptConnectionRequestEvent);
 

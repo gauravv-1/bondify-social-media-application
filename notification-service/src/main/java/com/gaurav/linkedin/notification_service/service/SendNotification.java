@@ -14,10 +14,11 @@ public class SendNotification {
 
     private final NotificationRepository notificationRepository;
 
-    public void send(Long userId, String message) {
+    public void send(Long userId, String message, String creatorName) {
         Notification notification = new Notification();
         notification.setMessage(message);
         notification.setUserId(userId);
+        notification.setUserName(creatorName);
 
         notificationRepository.save(notification);
         log.info("Message :- {}",message);

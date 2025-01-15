@@ -1,6 +1,4 @@
-package com.gaurav.linkedin.posts_service.service;
-
-
+package com.gaurav.linkedin.connection_service.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -23,19 +21,7 @@ public class JwtService {
     }
 
 
-    public Long getUserIdFromToken(String token){
-        Claims claims = Jwts.parser()
-                .verifyWith(getSecretKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-
-        return Long.valueOf(claims.getSubject());
-    }
-
-    // Extract username from the JWT token
     public String getUserNameFromToken(String token) {
-
         Claims claims = Jwts.parser()
                 .setSigningKey(getSecretKey())
                 .build()

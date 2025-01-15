@@ -6,4 +6,5 @@ import lombok.Data;
 public class AcceptConnectionRequestEvent {
     private Long senderId;
     private Long receiverId;
+    private String senderUserName;
 }

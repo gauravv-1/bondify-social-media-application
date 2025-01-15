@@ -28,10 +28,10 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<PostDto> createPost(@RequestBody PostCreateRequestDto postDto){
+    public ResponseEntity<PostDto> createPost(@RequestBody PostCreateRequestDto postDto, HttpServletRequest request){
         log.info("At PostController createPost method");
         postDto.getImageUrl().forEach((e)->log.info(e," Img Urls"));
-        PostDto createdPost = postService.createPost(postDto);
+        PostDto createdPost = postService.createPost(postDto,request);
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
 

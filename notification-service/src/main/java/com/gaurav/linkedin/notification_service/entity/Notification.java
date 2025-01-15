@@ -19,6 +19,7 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
+    private String userName;
     private String message;
 
     @CreationTimestamp

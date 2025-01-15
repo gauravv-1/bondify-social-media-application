@@ -8,10 +8,13 @@ import com.gaurav.linkedin.posts_service.exceptions.BadRequestException;
 import com.gaurav.linkedin.posts_service.exceptions.ResourceNotFoundException;
 import com.gaurav.linkedin.posts_service.repository.PostLikeRepository;
 import com.gaurav.linkedin.posts_service.repository.PostRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.lang.module.ResolutionException;
 
 @Service
 @Slf4j
@@ -21,10 +24,19 @@ public class PostLikeService {
     private final PostLikeRepository postLikeRepository;
     private final PostRepository postRepository;
     private final KafkaTemplate<Long,PostLikedEvent> kafkaTemplate;
+    private final JwtService jwtService;
 
-    public void likePost(Long postId){
+    public void likePost(Long postId, HttpServletRequest request){
 
         Long userId = UserContextHolder.getCurrentUserId();
+
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new ResolutionException("Authorization header is missing or invalid");
+        }
+        String token = authorizationHeader.substring(7);
+
+        String userName = jwtService.getUserNameFromToken(token);
 
         log.info("Attempting to like the post with id:{}",postId);
 
@@ -47,6 +59,7 @@ public class PostLikeService {
                 .postId(postId)
                 .likedByUserId(userId)
                 .creatorId(post.getUserId())
+                .likedByUserName(userName)
                 .build();
 
         kafkaTemplate.send("post-liked-topic",postId,postLikedEvent);

@@ -41,18 +41,20 @@ public class PostService {
     private final UserSeenPostRepository userSeenPostRepository;
     private final UserClient userClient;
 
-    public PostDto createPost(PostCreateRequestDto postDto) {
+    public PostDto createPost(PostCreateRequestDto postDto,HttpServletRequest request) {
         Long userId = UserContextHolder.getCurrentUserId();
 
-//        String authorizationHeader = request.getHeader("Authorization");
-//        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-//            throw new ResolutionException("Authorization header is missing or invalid");
-//        }
-//        String token = authorizationHeader.substring(7);
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new ResolutionException("Authorization header is missing or invalid");
+        }
+        String token = authorizationHeader.substring(7);
+
+        String userName = jwtService.getUserNameFromToken(token);
 
 //        Long userId = jwtService.getUserIdFromToken(token);
 
-        log.info("User Id: {}",userId);
+        log.info("User Name from Error : {}",userName);
         Post post = modelMapper.map(postDto, Post.class);
         post.setUserId(userId);
         log.info("Image Urls: {}",postDto.getImageUrl());
@@ -70,6 +72,7 @@ public class PostService {
         PostCreatedEvent postCreatedEvent = PostCreatedEvent.builder()
                 .postId(savedPost.getId())
                 .creatorId(userId)
+                .creatorUserName(userName)
                 .content(savedPost.getContent())
                 .build();
 
