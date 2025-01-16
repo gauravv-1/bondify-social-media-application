@@ -20,7 +20,7 @@ public class ConnectionsServiceConsumer {
         log.info("handle connections: handleSendConnectionRequest: {}", sendConnectionRequestEvent);
         String message =
                 "You have received a connection request from "+sendConnectionRequestEvent.getSenderUserName();
-        sendNotification.send(sendConnectionRequestEvent.getReceiverId(), message,sendConnectionRequestEvent.getSenderUserName());
+        sendNotification.send(sendConnectionRequestEvent.getReceiverId(), message,sendConnectionRequestEvent.getSenderUserName(),sendConnectionRequestEvent.getSenderId());
     }
 
 
@@ -30,7 +30,7 @@ public class ConnectionsServiceConsumer {
         log.info("handle connections: handleAcceptConnectionRequest: {}", acceptConnectionRequestEvent);
         String message =
                 "Your connection request has been accepted by "+acceptConnectionRequestEvent.getSenderUserName();
-        sendNotification.send(acceptConnectionRequestEvent.getSenderId(), message, acceptConnectionRequestEvent.getSenderUserName());
+        sendNotification.send(acceptConnectionRequestEvent.getSenderId(), message, acceptConnectionRequestEvent.getSenderUserName(), acceptConnectionRequestEvent.getReceiverId());
     }
 
 }

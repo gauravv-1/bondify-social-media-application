@@ -37,7 +37,7 @@ public class PostsServiceConsumer {
             sendNotification.send(
                     connection.getUserId(),
                     "Your connection " + postCreatedEvent.getCreatorUserName() + " has created a post, Check it out",
-                    postCreatedEvent.getCreatorUserName()
+                    postCreatedEvent.getCreatorUserName(), postCreatedEvent.getCreatorId()
             );
         }
     }
@@ -47,7 +47,7 @@ public class PostsServiceConsumer {
         log.info("Sending notifications: handlePostLiked: {}", postLikedEvent);
         String message = "Your post has been liked by "+postLikedEvent.getLikedByUserName();
 
-        sendNotification.send(postLikedEvent.getCreatorId(), message, postLikedEvent.getLikedByUserName());
+        sendNotification.send(postLikedEvent.getCreatorId(), message, postLikedEvent.getLikedByUserName(), postLikedEvent.getLikedByUserId());
     }
 
 }
