@@ -1,6 +1,7 @@
 package com.gaurav.linkedin.notification_service.service;
 
 
+import com.gaurav.linkedin.connection_service.event.EventType;
 import com.gaurav.linkedin.notification_service.entity.Notification;
 import com.gaurav.linkedin.notification_service.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +15,13 @@ public class SendNotification {
 
     private final NotificationRepository notificationRepository;
 
-    public void send(Long userId, String message, String creatorName, Long senderId) {
+    public void send(Long userId, String message, String creatorName, Long senderId, EventType eventType) {
         Notification notification = new Notification();
         notification.setMessage(message);
         notification.setUserId(userId);
         notification.setUserName(creatorName);
         notification.setSenderId(senderId);
+        notification.setEventType(eventType);
 
         notificationRepository.save(notification);
         log.info("Message :- {}",message);

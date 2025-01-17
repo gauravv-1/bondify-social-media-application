@@ -1,5 +1,6 @@
 package com.gaurav.linkedin.notification_service.entity;
 
+import com.gaurav.linkedin.connection_service.event.EventType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +23,9 @@ public class Notification {
     private String userName;
     private String message;
     private Long senderId;
+    private EventType eventType;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
 }

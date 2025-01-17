@@ -8,6 +8,7 @@ import com.gaurav.linkedin.connection_service.entity.Institute;
 import com.gaurav.linkedin.connection_service.entity.Person;
 
 import com.gaurav.linkedin.connection_service.event.AcceptConnectionRequestEvent;
+import com.gaurav.linkedin.connection_service.event.EventType;
 import com.gaurav.linkedin.connection_service.event.SendConnectionRequestEvent;
 import com.gaurav.linkedin.connection_service.repository.InstituteRepository;
 import com.gaurav.linkedin.connection_service.repository.PersonRepository;
@@ -87,6 +88,7 @@ public class ConnectionsService {
                 .senderId(senderId)
                 .receiverId(receiverId)
                 .senderUserName(userName)
+                .eventType(EventType.SEND_CONNECTION)
                 .build();
         sendRequestKafkaTemplate.send("send-connection-request-topic",sendConnectionRequestEvent);
         return true;
@@ -125,6 +127,7 @@ public class ConnectionsService {
                 .senderId(senderId)
                 .receiverId(receiverId)
                 .senderUserName(userName)
+                .eventType(EventType.ACCEPT_CONNECTION)
                 .build();
         acceptRequestKafkaTemplate.send("accept-connection-request-topic",acceptConnectionRequestEvent);
 

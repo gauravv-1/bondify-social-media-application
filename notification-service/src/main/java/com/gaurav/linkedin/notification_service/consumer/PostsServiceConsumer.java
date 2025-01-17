@@ -1,6 +1,7 @@
 package com.gaurav.linkedin.notification_service.consumer;
 
 
+import com.gaurav.linkedin.connection_service.event.EventType;
 import com.gaurav.linkedin.notification_service.clients.ConnectionsClient;
 import com.gaurav.linkedin.notification_service.clients.ConnectionsResponse;
 import com.gaurav.linkedin.notification_service.clients.WrappedResponse;
@@ -37,7 +38,7 @@ public class PostsServiceConsumer {
             sendNotification.send(
                     connection.getUserId(),
                     "Your connection " + postCreatedEvent.getCreatorUserName() + " has created a post, Check it out",
-                    postCreatedEvent.getCreatorUserName(), postCreatedEvent.getCreatorId()
+                    postCreatedEvent.getCreatorUserName(), postCreatedEvent.getCreatorId(), EventType.POST_EVENT
             );
         }
     }
@@ -47,7 +48,7 @@ public class PostsServiceConsumer {
         log.info("Sending notifications: handlePostLiked: {}", postLikedEvent);
         String message = "Your post has been liked by "+postLikedEvent.getLikedByUserName();
 
-        sendNotification.send(postLikedEvent.getCreatorId(), message, postLikedEvent.getLikedByUserName(), postLikedEvent.getLikedByUserId());
+        sendNotification.send(postLikedEvent.getCreatorId(), message, postLikedEvent.getLikedByUserName(), postLikedEvent.getLikedByUserId(),EventType.POST_EVENT);
     }
 
 }
