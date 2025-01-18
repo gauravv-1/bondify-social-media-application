@@ -57,13 +57,19 @@ public class PostController {
     }
 
     @GetMapping("/feed/getUnseenPosts")
-    public ResponseEntity<List<PostDto>> getUnseenPosts(@RequestParam int page, @RequestParam int size) {
-        List<PostDto> postDto = postService.getUnseenPosts(page,size);
-
-
+    public ResponseEntity<List<PostDto>> getUnseenFeedPosts(@RequestParam int page, @RequestParam int size) {
+        List<PostDto> postDto = postService.getUnseenFeedPosts(page,size);
 
         return ResponseEntity.ok(postDto);
     }
+
+    @GetMapping("/feed/getSeenPosts")
+    public ResponseEntity<List<PostDto>> getSeenFeedPosts(@RequestParam int page, @RequestParam int size) {
+        List<PostDto> postDto = postService.getSeenFeedPosts(page, size);
+        return ResponseEntity.ok(postDto);
+    }
+
+
 
 
     @PostMapping("/feed/mark-seen")
@@ -71,11 +77,5 @@ public class PostController {
         postService.markPostAsSeen(postIds);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
-
-
-
-
 
 }

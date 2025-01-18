@@ -118,7 +118,7 @@ public class PostService {
 
     }
 
-    public List<PostDto> getUnseenPosts(int page, int size) {
+    public List<PostDto> getUnseenFeedPosts(int page, int size) {
         Long userId = UserContextHolder.getCurrentUserId();
 
         // Fetch IDs of posts the user has already seen
@@ -157,4 +157,29 @@ public class PostService {
         userSeenPostRepository.saveAll(seenPosts);
 
     }
+
+    public List<PostDto> getSeenFeedPosts(int page, int size) {
+        Long userId = UserContextHolder.getCurrentUserId();
+
+        // Fetch IDs of posts the user has already seen
+        List<Long> seenPostIds = userSeenPostRepository.findPostIdByUserId(userId);
+        log.info("Seen Posts Ids: {}",seenPostIds);
+
+        // Fetch IDs of connected users
+        ApiResponse<List<Long>> response = connectionsClient.getConnectedUserId();
+        List<Long> connectedUserIds = response.getData(); // Extract the data field
+        log.info("Connected User IDs: {}", connectedUserIds);
+
+        // Create a pageable request for pagination
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        // Fetch seen posts
+        List<Post> seenPosts = postRepository.findByUserIdInAndIdIn(connectedUserIds, seenPostIds, pageable);
+
+        // Map the posts to DTOs and return
+        return seenPosts.stream()
+                .map(post -> modelMapper.map(post, PostDto.class))
+                .collect(Collectors.toList());
+    }
+
 }

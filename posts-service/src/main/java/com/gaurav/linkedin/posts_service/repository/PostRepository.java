@@ -17,4 +17,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             @Param("userIds") List<Long> userIds,
             @Param("excludedPostIds") List<Long> excludedPostIds,
             Pageable pageable); // Correct Pageable type
+
+    @Query("SELECT p FROM Post p WHERE p.userId IN :userIds AND p.id IN :postIds")
+    List<Post> findByUserIdInAndIdIn(@Param("userIds") List<Long> userIds, @Param("postIds") List<Long> postIds, Pageable pageable);
+
 }
