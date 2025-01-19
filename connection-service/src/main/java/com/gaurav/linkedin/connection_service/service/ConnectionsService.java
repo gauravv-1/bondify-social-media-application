@@ -2,6 +2,7 @@ package com.gaurav.linkedin.connection_service.service;
 
 import com.gaurav.linkedin.connection_service.auth.UserContextHolder;
 
+import com.gaurav.linkedin.connection_service.client.UserServiceClient;
 import com.gaurav.linkedin.connection_service.dto.ConnectionStatusDto;
 import com.gaurav.linkedin.connection_service.dto.InstituteDto;
 import com.gaurav.linkedin.connection_service.entity.Institute;
@@ -10,6 +11,7 @@ import com.gaurav.linkedin.connection_service.entity.Person;
 import com.gaurav.linkedin.connection_service.event.AcceptConnectionRequestEvent;
 import com.gaurav.linkedin.connection_service.event.EventType;
 import com.gaurav.linkedin.connection_service.event.SendConnectionRequestEvent;
+import com.gaurav.linkedin.connection_service.exceptions.ApiResponse;
 import com.gaurav.linkedin.connection_service.repository.InstituteRepository;
 import com.gaurav.linkedin.connection_service.repository.PersonRepository;
 import com.gaurav.linkedin.user_service.event.ProfileUpdatedEvent;
@@ -23,9 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.lang.module.ResolutionException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +38,7 @@ public class ConnectionsService {
     private final InstituteRepository instituteRepository;
     private final ModelMapper modelMapper;
     private final JwtService jwtService;
+    private final UserServiceClient userServiceClient;
 
 
 
@@ -84,11 +85,17 @@ public class ConnectionsService {
         log.info("Successfully sent connection request");
         personRepository.addConnectionRequest(senderId,receiverId);
 
+        ApiResponse<String> userProfileUrl = userServiceClient.getRequestedUsersProfileUrl(senderId);
+        log.info("USER PROFILE URL Data :- {}",userProfileUrl);
+        log.info("USER PROFILE URL :- {}",userProfileUrl.getData());
+
+
         SendConnectionRequestEvent sendConnectionRequestEvent = SendConnectionRequestEvent.builder()
                 .senderId(senderId)
                 .receiverId(receiverId)
                 .senderUserName(userName)
                 .eventType(EventType.SEND_CONNECTION)
+                .userProfileUrl(userProfileUrl.getData())
                 .build();
         sendRequestKafkaTemplate.send("send-connection-request-topic",sendConnectionRequestEvent);
         return true;
@@ -123,11 +130,16 @@ public class ConnectionsService {
 
         log.info("Successfully accept connection request, sender: {}, receiver: {}",senderId,receiverId);
 
+        ApiResponse<String> userProfileUrl = userServiceClient.getRequestedUsersProfileUrl(receiverId);
+        log.info("USER PROFILE URL Data :- {}",userProfileUrl);
+        log.info("USER PROFILE URL :- {}",userProfileUrl.getData());
+
         AcceptConnectionRequestEvent acceptConnectionRequestEvent = AcceptConnectionRequestEvent.builder()
                 .senderId(senderId)
                 .receiverId(receiverId)
                 .senderUserName(userName)
                 .eventType(EventType.ACCEPT_CONNECTION)
+                .userProfileUrl(userProfileUrl.getData())
                 .build();
         acceptRequestKafkaTemplate.send("accept-connection-request-topic",acceptConnectionRequestEvent);
 
@@ -207,4 +219,20 @@ public class ConnectionsService {
         Long userId = UserContextHolder.getCurrentUserId();
         return personRepository.getConnectedUserId(userId);
     }
+
+    public Map<Long, ConnectionStatusDto> getConnectionStatuses(List<Long> userIds) {
+
+        List<Long> validUserIds = userIds.stream()
+                .filter(Objects::nonNull) // Remove null values
+                .distinct() // Remove duplicate IDs
+                .collect(Collectors.toList());
+        // Fetch connection statuses for all user IDs
+        return validUserIds.stream()
+                .collect(Collectors.toMap(
+                        userId -> userId,
+                        userId -> getConnectionStatus(userId), // Replace with actual query
+                        (existing, duplicate) -> existing // Keep the existing value in case of duplicates
+                ));
+    }
+
 }

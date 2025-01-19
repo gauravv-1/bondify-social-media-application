@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/core")
@@ -47,6 +48,12 @@ public class ConnectionsController {
     public ResponseEntity<ApiResponse<ConnectionStatusDto>> getConnectionStatus(@PathVariable Long userId){
 
         return ResponseEntity.ok(new ApiResponse<>(connectionsService.getConnectionStatus(userId)));
+    }
+
+    @PostMapping("/getConnectionStatuses")
+    public ResponseEntity<ApiResponse<Map<Long, ConnectionStatusDto>>> getConnectionStatuses(@RequestBody List<Long> userIds) {
+        Map<Long, ConnectionStatusDto> connectionStatuses = connectionsService.getConnectionStatuses(userIds);
+        return ResponseEntity.ok(new ApiResponse<>(connectionStatuses));
     }
 
     @GetMapping("/getConnectedUserId")

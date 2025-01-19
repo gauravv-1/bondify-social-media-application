@@ -24,6 +24,7 @@ public class Notification {
     private String message;
     private Long senderId;
     private EventType eventType;
+    private String userProfileUrl;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

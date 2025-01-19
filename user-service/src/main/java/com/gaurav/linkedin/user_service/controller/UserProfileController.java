@@ -5,6 +5,7 @@ import com.gaurav.linkedin.user_service.dto.UserProfileUpdateRequest;
 import com.gaurav.linkedin.user_service.dto.UserProfiledDto;
 import com.gaurav.linkedin.user_service.dto.UserSearchResultDto;
 import com.gaurav.linkedin.user_service.entity.UserProfile;
+import com.gaurav.linkedin.user_service.exceptions.ApiResponse;
 import com.gaurav.linkedin.user_service.service.UserProfileService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,11 @@ public class UserProfileController {
         System.out.println("Search Term: " + searchTerm); // Log search term
         List<UserSearchResultDto> userSearchResultDto = userProfileService.searchUser(searchTerm);
         return new ResponseEntity<>(userSearchResultDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/getRequestedUsersProfileUrl/{userId}")
+    public ApiResponse<String> getRequestedUsersProfileUrl(@PathVariable Long userId){
+        return new ApiResponse<>(userProfileService.getRequestedUsersProfileUrl(userId));
     }
 
 }

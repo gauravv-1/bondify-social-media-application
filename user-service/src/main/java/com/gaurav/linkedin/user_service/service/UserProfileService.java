@@ -103,4 +103,10 @@ public class UserProfileService {
         System.out.println("Query Result: " + result); // Log the result
         return result;
     }
+
+    public String getRequestedUsersProfileUrl(Long userId) {
+
+        return userProfileRepository.findProfilePicUrlByUserId(userId);
+
+    }
 }

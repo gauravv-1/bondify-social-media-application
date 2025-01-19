@@ -16,5 +16,6 @@ public class NotificationDto {
     private LocalDateTime createdAt;
     private Long senderId;
     private EventType eventType;
+    private String userProfileUrl;
 
 }

@@ -8,4 +8,5 @@ public class AcceptConnectionRequestEvent {
     private Long receiverId;
     private String senderUserName;
     private EventType eventType;
+    private String userProfileUrl;
 }
