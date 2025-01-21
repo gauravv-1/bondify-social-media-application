@@ -1,5 +1,6 @@
 package com.gaurav.linkedin.posts_service.dto;
 
+import com.gaurav.linkedin.posts_service.entity.PostType;
 import jakarta.persistence.Column;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,5 +18,8 @@ public class PostDto {
     private LocalDateTime createdAt;
     private String profilePicUrl;
     private String userName;
+
+    private Long instituteId;
+    private PostType postType;
 
 }

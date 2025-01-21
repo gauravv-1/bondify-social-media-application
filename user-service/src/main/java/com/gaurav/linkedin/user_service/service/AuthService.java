@@ -92,7 +92,7 @@ public class AuthService {
         User user = userRepository.findByIdWithProfileAndInstitute(userId)
                 .orElseThrow(() -> new ResolutionException("User not found"));
 
-
+        log.info("At getRequestedUsersProfile Service user : {}",user);
         return modelMapper.map(user, UserDto.class);
 
     }

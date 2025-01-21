@@ -28,5 +28,6 @@ public class SendNotification {
         notificationRepository.save(notification);
         log.info("Message :- {}",message);
         log.info("Notification saved for user: {}", userId);
+        log.info("Notification userProfileUrl: {}",notification.getUserProfileUrl());
     }
 }

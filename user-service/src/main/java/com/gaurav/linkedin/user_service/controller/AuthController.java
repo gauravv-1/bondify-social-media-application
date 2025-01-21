@@ -39,6 +39,7 @@ public class AuthController {
 
     @GetMapping("/getUserProfile")
     public ResponseEntity<UserDto> getUserProfile(HttpServletRequest httpServletRequest){
+        log.info("At getUserProfile AuthController");
         UserDto userDto = authService.getUserProfile(httpServletRequest);
         return new ResponseEntity<>(userDto,HttpStatus.OK);
     }
@@ -51,6 +52,8 @@ public class AuthController {
 
     @PostMapping("/{userId}/getRequestedUsersProfile")
     public ResponseEntity<UserDto> getRequestedUsersProfile(@PathVariable Long userId){
+        log.info("At getRequestedUsersProfile with userId : {}",userId);
+
         return new ResponseEntity<>(authService.getRequestedUsersProfile(userId),HttpStatus.OK);
     }
 

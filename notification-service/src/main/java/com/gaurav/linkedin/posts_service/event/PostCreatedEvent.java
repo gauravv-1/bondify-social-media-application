@@ -8,5 +8,5 @@ public class PostCreatedEvent {
     String content;
     Long postId;
     String creatorUserName;
-    String userProfileUrl;
+    String profilePicUrl;
 }

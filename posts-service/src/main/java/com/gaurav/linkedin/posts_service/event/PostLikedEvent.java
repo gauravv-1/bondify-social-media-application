@@ -9,5 +9,6 @@ public class PostLikedEvent {
     Long postId;
     Long creatorId;
     Long likedByUserId;
+    String profilePicUrl;
     String likedByUserName;
 }

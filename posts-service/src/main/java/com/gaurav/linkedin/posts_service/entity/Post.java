@@ -39,5 +39,12 @@ public class Post {
     @Column(nullable = true)
     private String userName;
 
+    @Column(nullable = true)
+    private Long instituteId;  // Institute ID for institute-specific posts
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PostType postType;  // Type of post: NORMAL or INSTITUTE
+
 
 }

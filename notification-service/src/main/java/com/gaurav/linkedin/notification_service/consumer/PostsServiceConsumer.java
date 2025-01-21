@@ -41,7 +41,7 @@ public class PostsServiceConsumer {
                     postCreatedEvent.getCreatorUserName(),
                     postCreatedEvent.getCreatorId(),
                     EventType.POST_EVENT,
-                    postCreatedEvent.getUserProfileUrl()
+                    postCreatedEvent.getProfilePicUrl()
             );
         }
     }
@@ -56,7 +56,7 @@ public class PostsServiceConsumer {
                 postLikedEvent.getLikedByUserName(),
                 postLikedEvent.getLikedByUserId(),
                 EventType.POST_EVENT,
-                postLikedEvent.getUserProfileUrl()
+                postLikedEvent.getProfilePicUrl()
         );
     }
 

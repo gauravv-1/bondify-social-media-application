@@ -1,9 +1,12 @@
 package com.gaurav.linkedin.posts_service.controller;
 
 import com.gaurav.linkedin.posts_service.auth.UserContextHolder;
+import com.gaurav.linkedin.posts_service.clients.UserClient;
+import com.gaurav.linkedin.posts_service.clients.UserDto;
 import com.gaurav.linkedin.posts_service.dto.PostCreateRequestDto;
 import com.gaurav.linkedin.posts_service.dto.PostDto;
 import com.gaurav.linkedin.posts_service.entity.Post;
+import com.gaurav.linkedin.posts_service.entity.PostType;
 import com.gaurav.linkedin.posts_service.exceptions.ApiResponse;
 import com.gaurav.linkedin.posts_service.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +20,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.module.ResolutionException;
 import java.util.List;
 
 @RestController
@@ -26,6 +30,8 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final UserClient userClient;
+
 
     @PostMapping
     public ResponseEntity<PostDto> createPost(@RequestBody PostCreateRequestDto postDto, HttpServletRequest request){
@@ -34,6 +40,20 @@ public class PostController {
         PostDto createdPost = postService.createPost(postDto,request);
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
+
+    @PostMapping("/post")
+    public ResponseEntity<PostDto> createPrivilegePost(@RequestBody PostCreateRequestDto postDto, HttpServletRequest request) {
+        log.info("At PostController createPost method");
+
+        PostDto createdPost = postService.createPrivilegePost(postDto,request);
+        return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
+
+    }
+
+
+
+
+
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostDto> getPost(@PathVariable Long postId,HttpServletRequest httpServletRequest){
@@ -69,6 +89,16 @@ public class PostController {
         return ResponseEntity.ok(postDto);
     }
 
+    @GetMapping("/feed/getSeenPosts1")
+    public ResponseEntity<List<PostDto>> getSeenFeedPosts1(
+                                                           @RequestParam int page,
+                                                           @RequestParam int size,
+                                                           @RequestParam PostType postType
+                                                           ) {
+        List<PostDto> postDto = postService.getSeenFeedPosts1(page, size,postType);
+        return ResponseEntity.ok(postDto);
+    }
+
 
 
 
@@ -77,5 +107,20 @@ public class PostController {
         postService.markPostAsSeen(postIds);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
+
+
+    @GetMapping("/feed/getUnseenPosts1")
+    public ResponseEntity<List<PostDto>> getUnseenFeedPosts1(
+            @RequestParam PostType postType,
+            @RequestParam int page,
+            @RequestParam int size,
+            HttpServletRequest request) {
+        log.info("At getUnseenFeedPosts1 newly created");
+        List<PostDto> postDto = postService.getUnseenFeedPosts1(postType, page, size,request);
+        return ResponseEntity.ok(postDto);
+    }
+
 
 }
