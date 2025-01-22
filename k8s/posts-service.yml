@@ -44,6 +44,11 @@ spec:
               secretKeyRef:
                 name: my-secret
                 key: POSTS_DB_PASSWORD
+          - name: JWT_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: JWT_SECRET_KEY
         ports:
         - containerPort: 9010
 

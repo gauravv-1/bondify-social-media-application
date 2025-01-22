@@ -39,6 +39,11 @@ spec:
               secretKeyRef:
                 name: my-secret
                 key: CONNECTION_DB_PASSWORD
+          - name: JWT_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: my-secret 
+                key: JWT_SECRET_KEY
             
           # - name: DB_USER
           #   value: user

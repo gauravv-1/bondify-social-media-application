@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -37,8 +38,10 @@ public class ConnectionsService {
     private final KafkaTemplate<Long, AcceptConnectionRequestEvent> acceptRequestKafkaTemplate;
     private final InstituteRepository instituteRepository;
     private final ModelMapper modelMapper;
-    private final JwtService jwtService;
+//    private final JwtService jwtService;
     private final UserServiceClient userServiceClient;
+    @Autowired
+    private JwtService jwtService;
 
 
 
