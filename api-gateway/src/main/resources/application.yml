@@ -42,7 +42,7 @@ spring:
             - name: AuthenticationFilter
 
         - id: uploader-service
-          uri: lb://UPLOADER-SERVICE
+          uri: ${IMAGE_UPLOAD_SERVICE_URI:lb://UPLOADER-SERVICE}
           predicates:
             - Path=/api/v1/uploads/**
           filters:

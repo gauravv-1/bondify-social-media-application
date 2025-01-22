@@ -10,7 +10,8 @@ cloudinary:
   api-key: ${API_KEY}
   api-secret: ${API_SECRET}
 
-gcs:
-  bucket-name: ${GCS_BUCKET_NAME}
 
-  access-account: ${ACCESS_CONFIG}
+#gcs:
+#  bucket-name: ${GCS_BUCKET_NAME}
+#
+#  access-account: ${ACCESS_CONFIG}

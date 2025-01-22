@@ -22,6 +22,7 @@ public class UploaderConfig {
     @Value("${cloudinary.api-key}")
     private String apiKey;
 
+
     @Value("${cloudinary.api-secret}")
     private String apiSecret;
 
@@ -38,17 +39,17 @@ public class UploaderConfig {
         return new Cloudinary(configMap);
     }
 
-    @Value("${gcs.access-account}")
-    private String serviceAccountJson;
+//    @Value("${gcs.access-account}")
+//    private String serviceAccountJson;
 
 //    @Bean
-    public Storage storage() throws IOException {
-        return StorageOptions.newBuilder()
-                .setCredentials(ServiceAccountCredentials.fromStream(
-                        new ByteArrayInputStream(serviceAccountJson.getBytes())
-                ))
-                .build()
-                .getService();
-    }
+//    public Storage storage() throws IOException {
+//        return StorageOptions.newBuilder()
+//                .setCredentials(ServiceAccountCredentials.fromStream(
+//                        new ByteArrayInputStream(serviceAccountJson.getBytes())
+//                ))
+//                .build()
+//                .getService();
+//    }
 }
 
