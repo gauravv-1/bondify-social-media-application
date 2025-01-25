@@ -4,3 +4,21 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.LongSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  web:
+    mvc:
+      cors:
+        mappings:
+          /api/v1/users/**:
+            allowedOrigins:
+              - "http://localhost:5173"
+              - "http://172.18.192.1:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
