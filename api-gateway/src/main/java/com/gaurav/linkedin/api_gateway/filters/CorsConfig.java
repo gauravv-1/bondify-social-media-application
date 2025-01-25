@@ -17,6 +17,7 @@ public class CorsConfig implements WebFluxConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:5173")
                 .allowedOrigins("http://172.18.192.1:5173")
+                .allowedOrigins("http://192.168.1.6:5173/")
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true)
